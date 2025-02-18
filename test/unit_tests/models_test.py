@@ -1,8 +1,8 @@
 import pytest
-from sqlalchemy import create_mock_engine,create_engine
+from sqlalchemy import create_mock_engine,create_engine,delete
 from sqlalchemy.orm import Session
 from internal.database.db import Base
-from internal.models.Users import Users
+from internal.models.Wallets import Wallets
 import datetime
 import uuid
 
@@ -27,12 +27,35 @@ def db_session():
     session.close()
 
 
-def test_add_user(db_session):
-    user = Users(
+def test_add_wallet(db_session):
+    wallet = Wallets(
         uuid=uuid.uuid4(),
         amount=0,
         time_registration=datetime.datetime.now()
         )
     s = db_session
-    s.add(user)
+    s.add(wallet)
+    s.commit()
+
+def test_get_wallet(db_session):
+    wallet = Wallets(
+        uuid=uuid.uuid4(),
+        amount=0,
+        time_registration=datetime.datetime.now()
+        )
+    s = db_session
+    s.add(wallet)
+    s.commit()
+    wallet_from_db = s.query(Wallets).filter(Wallets.uuid == wallet.uuid).first()
+    assert wallet_from_db.uuid == wallet.uuid
+
+def test_update_wallet(db_session):
+    wallet = Wallets(
+        uuid=uuid.uuid4(),
+        amount=0,
+        time_registration=datetime.datetime.now()
+        )
+    s = db_session
+    s.add(wallet)
+    s.execute(delete(Wallets).where(Wallets.uuid == wallet.uuid))
     s.commit()
