@@ -1,7 +1,7 @@
 import pytest
 from sqlalchemy import create_mock_engine,create_engine,delete
 from sqlalchemy.orm import Session
-from internal.database.db import Base
+from internal.models.Base import Base
 from internal.models.Wallets import Wallets
 import datetime
 import uuid

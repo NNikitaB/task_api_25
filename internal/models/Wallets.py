@@ -1,4 +1,4 @@
-from internal.database.db import Base
+from internal.models.Base import Base
 from sqlalchemy.orm import (
     Mapped,
     mapped_column,
@@ -14,7 +14,7 @@ from sqlalchemy import (
 import datetime
 from uuid import UUID
 from typing import Optional
-from internal.schema.WalletSchema import WalletSchema
+from internal.schema.WalletSchema import WalletSchema,WalletGetSchema
 
 
 class Wallets(Base):
@@ -33,5 +33,13 @@ class Wallets(Base):
             uuid=self.uuid,
             amount=self.amount,
             time_registration=self.time_registration,
+        )
+    
+
+    def to_read_get_model(self) -> WalletGetSchema:
+        '''Converting model to schema'''
+        return WalletGetSchema(
+            uuid=self.uuid,
+            amount=self.amount,
         )
 

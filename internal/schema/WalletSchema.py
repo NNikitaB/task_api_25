@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from uuid import UUID
+from pydantic import BaseModel, Field
+from uuid import UUID,uuid4
 from datetime import datetime
 
 
@@ -21,9 +21,9 @@ class WalletSchema(BaseModel):
     '''
     Wallet schema
     '''
-    uuid: UUID
-    amount: int
-    time_registration: datetime
+    uuid: UUID = Field(default_factory=uuid4)
+    amount: int = Field(default=0)
+    time_registration: datetime =  Field(default_factory=datetime.now)
 
     class ConfigDict:
         from_attributes = True

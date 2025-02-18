@@ -16,9 +16,10 @@ engine = create_async_engine(url=url)
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
 #class Base(DeclarativeBase):
+#    abstract = True
 #    pass
 
-Base = declarative_base()
+#Base = declarative_base()
 
 async def get_async_session():
     async with async_session_maker() as session:
