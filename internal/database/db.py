@@ -5,7 +5,7 @@ from sqlalchemy import MetaData
 import logging
 
 
-url = "sqlite+aiosqlite://"
+url = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
 #url = "sqlite+aiosqlite:////T:\\VSC_PROJECTS\\python_servise_api\\app\\db\\file.db"
 
 engine = create_async_engine(url=url)
