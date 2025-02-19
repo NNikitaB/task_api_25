@@ -1,10 +1,11 @@
 FROM python:3.12.4
-WORKDIR /internal
-COPY internal/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir --upgrade -r /internal/requirements.txt
-COPY internal/ /internal/
+WORKDIR /code
 RUN mkdir -p ./test/
-COPY ./test /test
+RUN mkdir -p ./internal/
+COPY internal/requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY ./internal ./internal/
+COPY ./test /test/
 EXPOSE 8080
-#CMD ["unicorn", "app", "--host", "0.0.0.0", "--port", "8080"]
+CMD ["uvicorn", "internal.main.app:app", "--log-level","debug","--host", "0.0.0.0", "--port", "8080"]
 

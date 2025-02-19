@@ -3,7 +3,6 @@ from pydantic import ValidationError
 from fastapi.exceptions import RequestValidationError
 from internal.endpoints.routers import routers
 from internal.schema.Response import WalletResponse,BaseNotEnoughFundsResponse
-import uvicorn
 #add CORS
 from fastapi.middleware.cors import CORSMiddleware
 
