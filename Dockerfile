@@ -1,9 +1,10 @@
-FROM python:3.12.4-alpine
+FROM python:3.12.4
 WORKDIR /internal
-COPY .internal/requirements.txt .
+COPY internal/requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade -r /internal/requirements.txt
-COPY .internal /internal/
-COPY .test /test/
+COPY internal/ /internal/
+RUN mkdir -p ./test/
+COPY ./test /test
 EXPOSE 8080
-EXPOSE 5432
-CMD ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8080"]
+#CMD ["unicorn", "app", "--host", "0.0.0.0", "--port", "8080"]
+

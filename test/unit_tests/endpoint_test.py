@@ -12,11 +12,13 @@ import datetime
 from  uuid import UUID,uuid4
 import asyncio
 from fastapi.testclient import TestClient
-from internal.app.main import app
+from internal.main.app import app
 from internal.config import settings
 from internal.database.db import get_async_session
 from httpx import AsyncClient,ASGITransport
 import logging
+
+
 
 @pytest_asyncio.fixture(scope="module")
 async def client(db_session):

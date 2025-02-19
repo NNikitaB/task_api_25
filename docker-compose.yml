@@ -13,7 +13,7 @@ services:
       - ./changelog:/liquibase/changelog
     depends_on:
       - postgres
-    command: ["update"]
+    command: ["--changeLogFile=/liquibase/changelog/db.changelog-master.xml update"]
     networks:
       - net_shared
 
@@ -25,11 +25,11 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: wallets_db
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U dev -d postgre_dev"]
+      test: ["CMD-SHELL", "pg_isready -U dev -d postgres"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -37,7 +37,7 @@ services:
     networks:
       - net_shared
   pgadmin:
-    container_name: pgadmin_container
+    container_name: pgadmin_dev
     image: dpage/pgadmin4:7.2
     environment:
       PGADMIN_DEFAULT_EMAIL: "dev@habr.com"
@@ -46,7 +46,7 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     ports:
-      - "5050:80"
+      - "5060:80"
     restart: unless-stopped
     deploy:
       resources:
@@ -60,8 +60,7 @@ services:
     build: .
     container_name: fastapi_app
     ports:
-      - "8000:8000"   # FastAPI default port
-      -  5432:5432    ## PostgreSQL default port
+      - "8080:8080"   # FastAPI default port
     environment:
       MODE: DEV
       DB: postgresql+asyncpg
