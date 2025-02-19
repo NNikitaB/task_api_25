@@ -1,5 +1,6 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,HTTPException
 from pydantic import ValidationError
+from fastapi.exceptions import RequestValidationError
 from internal.endpoints.routers import routers
 from internal.schema.Response import WalletResponse,BaseNotEnoughFundsResponse
 import uvicorn
@@ -19,18 +20,13 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    
 )
 
 
-
 app.include_router(routers)
+app.include_router
 
-@app.exception_handler(422)
-async def validation_exception_handler(request, exc):
-    return WalletResponse(status=BaseNotEnoughFundsResponse.status, content="Bad request,422 non supported entity")
-
-
-#if __name__ == "__main__":
-    #uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
-
+if __name__ == "__main__":
+    uvicorn.run(f"{__name__}:app",host="127.0.0.1", port=8000, reload=True)
 

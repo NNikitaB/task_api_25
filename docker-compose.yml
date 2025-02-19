@@ -1,0 +1,84 @@
+version: "3.8"
+
+services:
+  liquibase:
+    image: liquibase/liquibase
+    container_name: liquibase
+    environment:
+      - LIQUIBASE_URL=jdbc:postgresql://postgres:5432/wallets_db
+      - LIQUIBASE_USERNAME=dev
+      - LIQUIBASE_PASSWORD=admin
+      - LIQUIBASE_CHANGELOG_FILE=/liquibase/changelog/db.changelog-master.xml
+    volumes:
+      - ./changelog:/liquibase/changelog
+    depends_on:
+      - postgres
+    command: ["update"]
+    networks:
+      - net_shared
+
+  postgres:
+    image: postgres:13
+    container_name: postgres
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: wallets_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev -d postgre_dev"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - net_shared
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4:7.2
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "dev@habr.com"
+      PGADMIN_DEFAULT_PASSWORD: "admin"
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1G
+    networks:
+      - net_shared
+
+  fastapi:
+    build: .
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"   # FastAPI default port
+      -  5432:5432    ## PostgreSQL default port
+    environment:
+      MODE: DEV
+      DB: postgresql+asyncpg
+      DB_USER: dev
+      DB_PASS: admin
+      DB_HOST: 0.0.0.0
+      DB_PORT: 5432
+      DB_NAME: wallets_db
+      #DATABASE_URL: postgresql://myuser:mypassword@postgres_db/mydatabase
+    depends_on:
+      - postgres
+    networks:
+      - net_shared
+
+volumes:
+  pgdata:
+  pgadmin-data:
+
+networks:
+  net_shared:

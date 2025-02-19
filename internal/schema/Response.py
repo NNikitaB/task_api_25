@@ -16,7 +16,7 @@ class BaseCreateResponse(BaseModel):
 
 
 class BaseNotEnoughFundsResponse(BaseModel):
-    status: int = HTTP_422_UNPROCESSABLE_ENTITY
+    status: int = 425
     error: bool = True
 
 
