@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_serializer
 from uuid import UUID,uuid4
 from datetime import datetime
 
@@ -15,6 +15,10 @@ class WalletDeleteSchema(BaseModel):
 class WalletUpdateSchema(BaseModel):
     uuid: UUID
     amount: int
+
+    @field_serializer('uuid')
+    def serialize_dt(self, uuid: UUID, _info):
+        return str(uuid)
 
 
 class WalletSchema(BaseModel):

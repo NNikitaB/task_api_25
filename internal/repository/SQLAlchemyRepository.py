@@ -5,6 +5,7 @@ from internal.models.Base import Base
 from uuid import UUID
 from typing import  Any, Never, Sequence
 
+
 class SQLAlchemyRepository(AbstractRepository):
     '''CRUD operations for SQLAlchemy'''
     

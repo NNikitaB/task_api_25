@@ -3,10 +3,20 @@ from sqlalchemy.orm import DeclarativeBase,declarative_base
 from sqlalchemy_utils import database_exists, create_database # type: ignore
 from sqlalchemy import MetaData
 import logging
+from internal.config import settings
 
+url = ""
 
-url = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
-#url = "sqlite+aiosqlite:////T:\\VSC_PROJECTS\\python_servise_api\\app\\db\\file.db"
+if settings.MODE == "TEST":
+    url = settings.BD_URL_TEST
+    logging.debug("TEST MODE")
+else:
+    url = settings.DB_URL
+    logging.info("PROD MODE")
+
+#logging.basicConfig(level=logging.DEBUG)
+#url = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
+#url = "sqlite+aiosqlite://"
 
 engine = create_async_engine(url=url)
 

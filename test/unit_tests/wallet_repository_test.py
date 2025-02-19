@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine,Async
 from sqlalchemy.orm import Session
 from internal.models.Base import Base
 from internal.models.Wallets import Wallets
-from internal.repository.WalletRepository import WalletRepository
+from internal.repository.WalletRepository import WalletRepository,WalletNotCreatedExeption
 from internal.schema.WalletSchema import WalletSchema,WalletGetSchema,WalletDeleteSchema,WalletUpdateSchema
 from typing import Sequence
 import datetime
@@ -13,7 +13,7 @@ import uuid
 import asyncio
 
 
-@pytest_asyncio.fixture(scope="session")
+@pytest_asyncio.fixture(scope="function")
 async def db_session():
     url="sqlite+aiosqlite://"
     engine = create_async_engine(url=url,echo=True)
@@ -58,8 +58,8 @@ async def test_delete_wallet_repos(db_session):
     wallet_uuid = await rep.create_wallet()
     assert wallet_uuid is not None
     await rep.delete_wallet(uuid=wallet_uuid)
-    wallet = await rep.get_wallet(wallet_uuid)
-    assert wallet is None
+    with pytest.raises(WalletNotCreatedExeption):
+        wallet = await rep.get_wallet(wallet_uuid)
 
 @pytest.mark.asyncio    
 async def test_get_all_wallet_repos(db_session):
