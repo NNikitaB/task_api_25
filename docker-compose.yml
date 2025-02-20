@@ -40,6 +40,7 @@ services:
   pgadmin:
     container_name: pgadmin_dev
     image: dpage/pgadmin4:7.2
+    command: -c 'max_connections=1000' -c 'shared_buffers=2GB' -c 'work_mem=524MB' -c 'maintenance_work_mem=256MB' -c 'effective_cache_size=2GB' -c 'max_worker_processes=10' 
     environment:
       PGADMIN_DEFAULT_EMAIL: "dev@habr.com"
       PGADMIN_DEFAULT_PASSWORD: "admin"

@@ -20,12 +20,12 @@ else:
 #url = "postgresql+asyncpg://postgres:postgres@localhost:5432/postgres"
 #url = "sqlite+aiosqlite://"
 
-engine = create_async_engine(url=url)
+engine = create_async_engine(url=url,pool_size=10000,max_overflow=200,)
 
 #if not database_exists(engine.url):
 #    create_database(engine.url)
 
-async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
+async_session_maker = async_sessionmaker(engine, expire_on_commit=False,autoflush=False,autocommit=False,)
 
 
 
