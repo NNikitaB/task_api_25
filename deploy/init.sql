@@ -1,0 +1,8 @@
+CREATE DATABASE wallets_db;
+
+CREATE TABLE wallets (
+	uuid CHAR(32) NOT NULL, 
+	amount INTEGER NOT NULL, 
+	time_registration DATETIME DEFAULT (CURRENT_TIMESTAMP) NOT NULL, 
+	PRIMARY KEY (uuid)
+);

@@ -50,6 +50,7 @@ async def test_update_wallet_repos(db_session):
     assert wallet_uuid is not None
     wallet = await rep.update_wallet(WalletUpdateSchema(uuid=wallet_uuid,amount=1000))
     assert wallet is not None
+    assert wallet.amount == 1000
     print(wallet.model_dump_json())
 
 @pytest.mark.asyncio

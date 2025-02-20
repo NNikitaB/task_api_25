@@ -17,6 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from internal.services.transaction import Transaction,TransactionService,NotEnoughFunds
 from internal.schema.WalletSchema import WalletGetSchema,WalletUpdateSchema
 from internal.repository.WalletRepository import WalletRepository,WalletNotCreatedExeption
+import logging
 
 
 crud_router = APIRouter(prefix="/api/v2/wallet", tags=["CRUDWallet"])
@@ -46,11 +47,12 @@ async def get_wallet(uuid: UUID, db_session: AsyncSession = Depends(get_async_se
         return WalletResponse(uuid=uuid, balance=0,status=BaseBadRequestResponse().status, content="Bad request")
     return WalletResponse(uuid=uuid, balance=wallet.amount)
 
-@crud_router.post("/update/{uuid}", response_model=WalletResponse)
+@crud_router.post("/update", response_model=WalletResponse)
 async def update_wallet(wallet: WalletUpdateSchema, db_session: AsyncSession = Depends(get_async_session)):
     try:
         rep = WalletRepository(db_session)
         wallet = await rep.update_wallet(wallet)
+        logging.info(f"Wallet {wallet.amount} updated")
     except WalletNotCreatedExeption:
         return WalletResponse(status=BaseNotFoundResponse().status, content=WalletNotCreatedExeption.detail)
     except ValueError:
@@ -59,7 +61,7 @@ async def update_wallet(wallet: WalletUpdateSchema, db_session: AsyncSession = D
         return WalletResponse(status=BaseBadRequestResponse().status, content="Bad request")
     return WalletResponse(uuid=wallet.uuid, balance=wallet.amount)
 
-@crud_router.post("/delete/{uuid}", response_model=BaseResponse)
+@crud_router.post("/delete", response_model=BaseResponse)
 async def delete_wallet(uuid: UUID, db_session: AsyncSession = Depends(get_async_session)):
     try:
         rep = WalletRepository(db_session)

@@ -7,6 +7,7 @@ from internal.schema.Response import WalletResponse,BaseNotEnoughFundsResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 
+
 origins = [
     "http://localhost:3000",
 ]
@@ -24,7 +25,12 @@ app.add_middleware(
 
 
 app.include_router(routers)
-app.include_router
+
+
+
+
+
+
 
 #if __name__ == "__main__":
 #    uvicorn.run(f"{__name__}:app",host="127.0.0.1", port=8080, reload=True)

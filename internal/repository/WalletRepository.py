@@ -3,6 +3,8 @@ from uuid import UUID
 from internal.repository.SQLAlchemyRepository import SQLAlchemyRepository
 from internal.models.Wallets import Wallets
 from internal.schema.WalletSchema import WalletSchema,WalletGetSchema,WalletDeleteSchema,WalletUpdateSchema
+import logging
+
 
 
 class WalletNotCreatedExeption(Exception):
@@ -37,5 +39,9 @@ class WalletRepository(SQLAlchemyRepository):
 
     async def get_all_wallets(self) -> Sequence[WalletGetSchema]:
         wallets = await self.get_all()
-        return [WalletGetSchema.model_validate(wallet.to_read_get_model()) for wallet in wallets]
+        def convert_to_wallet_schema(wallet: Wallets) -> WalletGetSchema:
+            w = WalletSchema.model_validate(wallet.to_read_model())
+            return WalletGetSchema(uuid=w.uuid,amount=w.amount)
+
+        return [convert_to_wallet_schema(wallet) for wallet in wallets]
         

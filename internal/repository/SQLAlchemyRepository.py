@@ -27,11 +27,13 @@ class SQLAlchemyRepository(AbstractRepository):
     async def update_one(self, uuid:UUID, **kwargs) -> Any | None:
         smtp = update(self.model).filter(self.model.uuid == uuid).values(**kwargs).returning(self.model)
         obj = await self.session.execute(smtp)
+        await self.session.commit()
         return obj.scalar_one_or_none()
 
     async def delete_one(self, **kwargs: Any) -> Never:
         smtp = delete(self.model).filter_by(**kwargs)
         await self.session.execute(smtp)
+        await self.session.commit()
 
     async def delete_all(self) -> Never:
         smtp = delete(self.model)

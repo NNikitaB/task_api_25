@@ -4,7 +4,7 @@ from uuid import uuid4
 import requests
 #POST api/v1/wallets/<WALLET_UUID>/operations
 id:str
-host = "http://localhost:8080/"
+host = "http://fastapi:8080/"
 @events.test_start.add_listener
 def on_test_start(environment, **kwargs):
     print("A new test is starting")

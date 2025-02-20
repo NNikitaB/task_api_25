@@ -7,7 +7,7 @@
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
     <!-- ChangeSet for creating wallets table -->
-    <changeSet id="1" author="your_name">
+    <changeSet id="1" author="Niki">
         <createTable tableName="wallets">
             <column name="uuid" type="CHAR(32)">
                 <constraints primaryKey="true" nullable="false"/>

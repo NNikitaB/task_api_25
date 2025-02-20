@@ -78,14 +78,14 @@ async def test_create_update_delete_wallets(client):
     logging.info(response)
     assert response['status'] == 200
     wallet_data = WalletUpdateSchema(uuid=response['uuid'], amount=2000)
-    response = await client.post(f"/api/v2/wallet/update/{created_uuid}",json=wallet_data.model_dump())
+    response = await client.post("/api/v2/wallet/update",json=wallet_data.model_dump())
     response  = response.json()
     logging.info(response)
     assert response['status'] == 200
     assert response['balance'] == 2000
     created_uuid:UUID= response['uuid']
-    str_uuid = str(created_uuid)
-    response = await client.post(f"/api/v2/wallet/delete/{created_uuid}")
+    response = await client.post(f"/api/v2/wallet/delete?uuid={created_uuid}")
+    logging.info(response.json())
     response  = response.json()
     logging.info(response)
     assert response['status'] == 200
@@ -108,7 +108,7 @@ async def test_wallet_get(client):
     assert response['status'] == 200
 
     id = response['uuid']
-    response = await client.get(f"/api/v1/wallet/{id}")
+    response = await client.get(f"/api/v1/wallets/{id}")
     response  = response.json()
     logging.info(response)
     assert response['status'] == 200
@@ -122,7 +122,7 @@ async def test_wallet_get_404(client):
     assert response['status'] == 200
 
     id = UUID("00000000-0000-0000-0000-000000000000")
-    response = await client.get(f"/api/v1/wallet/{id}")
+    response = await client.get(f"/api/v1/wallets/{id}")
     logging.info(response.json())
     assert response.status_code == 404
 
@@ -134,7 +134,7 @@ async def test_wallet_get_422(client):
     logging.info(response)
     assert response['status'] == 200
 
-    response = await client.get(f"/api/v1/wallet/fdfe34sdf")
+    response = await client.get(f"/api/v1/wallets/fdfe34sdf")
     logging.info(response.json())
     assert response.status_code == 422
 
@@ -147,7 +147,7 @@ async def test_wallet_operations_404(client):
     assert response['status'] == 200
 
     id = uuid4()
-    response = await client.post(f"/api/v1/wallet/{id}/operation",json={"operationType":"DEPOSIT","amount":100})
+    response = await client.post(f"/api/v1/wallets/{id}/operation",json={"operationType":"DEPOSIT","amount":100})
     logging.info(response.json())
     assert response.status_code == 404
 
@@ -159,7 +159,7 @@ async def test_wallet_operations_200(client):
     assert response['status'] == 200
 
     id = response['uuid']
-    response = await client.post(f"/api/v1/wallet/{id}/operation",json={"operationType":"DEPOSIT","amount":100})
+    response = await client.post(f"/api/v1/wallets/{id}/operation",json={"operationType":"DEPOSIT","amount":100})
     logging.info(response.json())
     assert response.status_code == 200
 
@@ -171,7 +171,7 @@ async def test_wallet_operations_422(client):
     assert response['status'] == 200
 
     id = response['uuid']
-    response = await client.post(f"/api/v1/wallet/{id}/operation",json={"oype":"DEPOSIT","amount":100})
+    response = await client.post(f"/api/v1/wallets/{id}/operation",json={"oype":"DEPOSIT","amount":100})
     logging.info(response.json())
     assert response.status_code == 422
 
@@ -183,7 +183,7 @@ async def test_wallet_operations_NotEnoughFunds_425(client):
     assert response['status'] == 200
 
     id = response['uuid']
-    response = await client.post(f"/api/v1/wallet/{id}/operation",json={"operationType":"WITHDRAW","amount":1000})
+    response = await client.post(f"/api/v1/wallets/{id}/operation",json={"operationType":"WITHDRAW","amount":1000})
     logging.info(response.json())
     assert response.status_code == 425
 
@@ -197,11 +197,11 @@ async def test_wallet_operations_deposit_withraw_200(client):
     assert response['status'] == 200
 
     id = response['uuid']
-    response = await client.post(f"/api/v1/wallet/{id}/operation",json={"operationType":"DEPOSIT","amount":1000})
+    response = await client.post(f"/api/v1/wallets/{id}/operation",json={"operationType":"DEPOSIT","amount":1000})
     logging.info(response.json())
     assert response.status_code == 200
 
-    response = await client.post(f"/api/v1/wallet/{id}/operation",json={"operationType":"WITHDRAW","amount":100})
+    response = await client.post(f"/api/v1/wallets/{id}/operation",json={"operationType":"WITHDRAW","amount":100})
     logging.info(response.json())
     assert response.status_code == 200
     assert response.json()['balance'] == 900

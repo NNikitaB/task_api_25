@@ -16,9 +16,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from internal.services.transaction import Transaction,TransactionService,NotEnoughFunds
 from internal.schema.WalletSchema import WalletGetSchema,WalletUpdateSchema
 from internal.repository.WalletRepository import WalletRepository,WalletNotCreatedExeption
+import logging
 
-
-wallet_router = APIRouter(prefix="/api/v1/wallet", tags=["Wallets"])
+wallet_router = APIRouter(prefix="/api/v1/wallets", tags=["Wallets"])
 
 
 # Эндпоинт для выполнения операции с кошельком

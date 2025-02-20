@@ -4,6 +4,8 @@ from sqlalchemy_utils import database_exists, create_database # type: ignore
 from sqlalchemy import MetaData
 import logging
 from internal.config import settings
+from internal.models.Base import Base
+
 
 url = ""
 
@@ -25,6 +27,8 @@ engine = create_async_engine(url=url)
 
 async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
+
+
 #class Base(DeclarativeBase):
 #    abstract = True
 #    pass
@@ -32,5 +36,13 @@ async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 #Base = declarative_base()
 
 async def get_async_session():
+    await create_tables()
     async with async_session_maker() as session:
         yield session
+
+
+async def create_tables():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+
+
